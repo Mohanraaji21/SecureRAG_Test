@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureContext-RAG</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="shell">
+  <nav class="rail">
+    <div class="brand">
+      <span class="brand-mark">◆</span>
+      <span class="brand-name">SecureContext<span class="accent">-RAG</span></span>
+    </div>
+    <button class="nav-item is-active" data-view="scans">Scans</button>
+    <button class="nav-item" data-view="findings">Findings</button>
+    <button class="nav-item" data-view="metrics">Calibration</button>
+
+    <div class="rail-footer">
+      <label class="field-label" for="apiKey">API key</label>
+      <input id="apiKey" type="password" placeholder="X-API-Key" autocomplete="off">
+      <div class="conn-status" id="connStatus">checking…</div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- SCANS VIEW -->
+    <section class="view is-active" id="view-scans">
+      <header class="view-head">
+        <h1>Scans</h1>
+        <p class="sub">Trigger a scan and watch it move from pending to completed.</p>
+      </header>
+
+      <form class="panel trigger-form" id="triggerForm">
+        <div class="field">
+          <label class="field-label" for="repoPath">Repo path (on the server)</label>
+          <input id="repoPath" type="text" placeholder="/repos/checkout/webapp" required>
+        </div>
+        <div class="field">
+          <label class="field-label" for="repoName">Repo name</label>
+          <input id="repoName" type="text" placeholder="acme-org/webapp" required>
+        </div>
+        <div class="field field-narrow">
+          <label class="field-label" for="prNumber">PR #</label>
+          <input id="prNumber" type="number" placeholder="optional">
+        </div>
+        <button type="submit" class="btn-primary">Trigger scan</button>
+      </form>
+
+      <div class="panel-head-row">
+        <h2>Scan history</h2>
+        <button class="btn-ghost" id="refreshScans">Refresh</button>
+      </div>
+      <div class="table" id="scansTable">
+        <div class="table-row table-head">
+          <div>Repo</div><div>PR</div><div>Status</div><div>Triggered</div><div></div>
+        </div>
+        <div class="table-empty">No scans yet — trigger one above.</div>
+      </div>
+    </section>
+
+    <!-- FINDINGS VIEW -->
+    <section class="view" id="view-findings">
+      <header class="view-head">
+        <h1>Findings</h1>
+        <p class="sub">Confidence-ranked, with the evidence that drove each verdict.</p>
+      </header>
+
+      <div class="panel filter-row">
+        <div class="field">
+          <label class="field-label" for="filterScan">Scan</label>
+          <select id="filterScan"><option value="">All scans</option></select>
+        </div>
+        <div class="field field-narrow">
+          <label class="field-label" for="filterConfidence">Min. confidence</label>
+          <input id="filterConfidence" type="number" min="0" max="1" step="0.1" placeholder="0.0">
+        </div>
+        <div class="field field-narrow">
+          <label class="field-label" for="filterCwe">CWE</label>
+          <input id="filterCwe" type="text" placeholder="CWE-89">
+        </div>
+        <button class="btn-ghost" id="applyFilters">Apply</button>
+      </div>
+
+      <div class="findings-list" id="findingsList">
+        <div class="table-empty">Run a scan, then findings will appear here.</div>
+      </div>
+    </section>
+
+    <!-- METRICS VIEW -->
+    <section class="view" id="view-metrics">
+      <header class="view-head">
+        <h1>Calibration</h1>
+        <p class="sub">Expected Calibration Error, computed from reviewer-confirmed verdicts.</p>
+      </header>
+
+      <div class="panel metrics-summary" id="metricsSummary">
+        <div class="metric-block">
+          <div class="metric-value" id="metricEce">—</div>
+          <div class="metric-label">Expected Calibration Error</div>
+        </div>
+        <div class="metric-block">
+          <div class="metric-value" id="metricN">—</div>
+          <div class="metric-label">Reviewed verdicts</div>
+        </div>
+      </div>
+
+      <h2>Reliability diagram</h2>
+      <div class="reliability" id="reliabilityChart">
+        <div class="table-empty">No reviewed verdicts yet — confirm or overrule a finding to populate this.</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="modal-backdrop" id="reviewBackdrop">
+  <div class="modal">
+    <h3>Review verdict</h3>
+    <p class="sub" id="reviewFindingSummary"></p>
+    <div class="field">
+      <label class="field-label" for="reviewerId">Your name / id</label>
+      <input id="reviewerId" type="text" placeholder="priya.k">
+    </div>
+    <div class="field">
+      <label class="field-label">Decision</label>
+      <div class="decision-row">
+        <button class="decision-btn" data-decision="confirmed">Confirm</button>
+        <button class="decision-btn" data-decision="overruled">Overrule</button>
+        <button class="decision-btn" data-decision="unsure">Unsure</button>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="reviewNote">Note (optional)</label>
+      <textarea id="reviewNote" rows="2" placeholder="Why?"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="closeReview">Cancel</button>
+      <button class="btn-primary" id="submitReview">Submit review</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

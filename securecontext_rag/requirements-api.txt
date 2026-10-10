@@ -1,0 +1,15 @@
+# Phase 2 -- FastAPI application layer
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic-settings>=2.2
+sqlalchemy>=2.0
+
+# SQL Server driver (production persistence, matches SSMS setup).
+# Requires the system-level "ODBC Driver 18 for SQL Server" to be
+# installed separately -- see README_PHASE2.md. Not needed for local
+# dev/tests, which default to SQLite (no extra system deps).
+pyodbc>=5.1
+
+# Testing
+httpx>=0.27
+pytest>=8.0

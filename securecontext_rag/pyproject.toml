@@ -1,0 +1,9 @@
+[project]
+name = "securecontext-rag-core"
+version = "0.1.0"
+description = "SecureContext-RAG Phase 1 AI Core: Semgrep + FAISS retrieval + LLM adjudication + calibration."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests", "tests_api"]

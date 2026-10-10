@@ -1,0 +1,98 @@
+[
+  {
+    "cwe_id": "CWE-89",
+    "kind": "cwe_definition",
+    "title": "SQL Injection",
+    "text": "Occurs when untrusted input is concatenated directly into a SQL query instead of being passed as a parameterized value, letting an attacker alter query logic, read or modify unauthorized data, or execute administrative database operations."
+  },
+  {
+    "cwe_id": "CWE-89",
+    "kind": "vuln_fix_pair",
+    "title": "SQL injection fix pattern: string concatenation to parameterized query",
+    "text": "Vulnerable: query = \"SELECT * FROM users WHERE id = \" + user_id; cursor.execute(query). Fixed: cursor.execute(\"SELECT * FROM users WHERE id = %s\", (user_id,)). The fix replaces string concatenation with a parameterized placeholder so the driver escapes the value instead of treating it as SQL syntax."
+  },
+  {
+    "cwe_id": "CWE-79",
+    "kind": "cwe_definition",
+    "title": "Cross-Site Scripting (XSS)",
+    "text": "Occurs when untrusted input is written into an HTML response without contextual output encoding, allowing an attacker-supplied script to execute in another user's browser session."
+  },
+  {
+    "cwe_id": "CWE-79",
+    "kind": "vuln_fix_pair",
+    "title": "XSS fix pattern: raw interpolation to escaped output",
+    "text": "Vulnerable: return f\"<div>{comment}</div>\". Fixed: return f\"<div>{html.escape(comment)}</div>\". The fix HTML-encodes the untrusted value before it is embedded in the response body."
+  },
+  {
+    "cwe_id": "CWE-78",
+    "kind": "cwe_definition",
+    "title": "OS Command Injection",
+    "text": "Occurs when untrusted input is passed to a shell command interpreter, allowing an attacker to inject additional shell metacharacters or commands that execute with the privileges of the host process."
+  },
+  {
+    "cwe_id": "CWE-78",
+    "kind": "vuln_fix_pair",
+    "title": "Command injection fix pattern: shell=True to argument list",
+    "text": "Vulnerable: subprocess.run(f\"ping {host}\", shell=True). Fixed: subprocess.run([\"ping\", host], shell=False). The fix avoids invoking a shell entirely, passing the argument as a discrete list element so shell metacharacters are not interpreted."
+  },
+  {
+    "cwe_id": "CWE-798",
+    "kind": "cwe_definition",
+    "title": "Use of Hard-coded Credentials",
+    "text": "Occurs when a password, API key, or cryptographic key is embedded directly in source code, making it visible to anyone with source access and difficult to rotate without a code change."
+  },
+  {
+    "cwe_id": "CWE-798",
+    "kind": "vuln_fix_pair",
+    "title": "Hard-coded credential fix pattern: literal to environment variable",
+    "text": "Vulnerable: API_KEY = \"sk-live-abc123\". Fixed: API_KEY = os.environ[\"API_KEY\"]. The fix removes the secret from source control and sources it from environment configuration or a secrets manager at runtime."
+  },
+  {
+    "cwe_id": "CWE-502",
+    "kind": "cwe_definition",
+    "title": "Deserialization of Untrusted Data",
+    "text": "Occurs when an application deserializes attacker-controlled data using a format capable of reconstructing arbitrary objects or invoking code (e.g. pickle), which can lead to remote code execution."
+  },
+  {
+    "cwe_id": "CWE-502",
+    "kind": "vuln_fix_pair",
+    "title": "Insecure deserialization fix pattern: pickle to a safe schema-based format",
+    "text": "Vulnerable: obj = pickle.loads(request_body). Fixed: obj = json.loads(request_body); obj = MySchema(**obj) with explicit field validation. The fix replaces a format that can execute arbitrary code on load with a data-only format plus explicit schema validation."
+  },
+  {
+    "cwe_id": "CWE-22",
+    "kind": "cwe_definition",
+    "title": "Path Traversal",
+    "text": "Occurs when a file path is built from untrusted input without normalizing or restricting it, allowing an attacker to use sequences like '../' to access files outside the intended directory."
+  },
+  {
+    "cwe_id": "CWE-22",
+    "kind": "vuln_fix_pair",
+    "title": "Path traversal fix pattern: raw join to validated, resolved path",
+    "text": "Vulnerable: open(os.path.join(base_dir, user_filename)). Fixed: candidate = (base_dir / user_filename).resolve(); assert candidate.is_relative_to(base_dir.resolve()); open(candidate). The fix resolves the final path and verifies it is still contained within the intended base directory before use."
+  },
+  {
+    "cwe_id": "CWE-327",
+    "kind": "cwe_definition",
+    "title": "Use of a Broken or Risky Cryptographic Algorithm",
+    "text": "Occurs when an application uses a cryptographic algorithm known to be weak (e.g. MD5 or SHA1 for password hashing, or ECB mode for encryption), undermining the confidentiality or integrity guarantees the code relies on."
+  },
+  {
+    "cwe_id": "CWE-327",
+    "kind": "vuln_fix_pair",
+    "title": "Weak hash fix pattern: MD5 to a modern password hash",
+    "text": "Vulnerable: hashlib.md5(password.encode()).hexdigest(). Fixed: bcrypt.hashpw(password.encode(), bcrypt.gensalt()). The fix replaces a fast, collision-prone general-purpose hash with an algorithm specifically designed to be slow and salted for password storage."
+  },
+  {
+    "cwe_id": "CWE-611",
+    "kind": "cwe_definition",
+    "title": "Improper Restriction of XML External Entity Reference (XXE)",
+    "text": "Occurs when an XML parser resolves external entity references from untrusted input, allowing an attacker to read local files, perform server-side request forgery, or cause denial of service."
+  },
+  {
+    "cwe_id": "CWE-611",
+    "kind": "vuln_fix_pair",
+    "title": "XXE fix pattern: default parser to entity-resolution disabled",
+    "text": "Vulnerable: etree.parse(untrusted_input) with a default XML parser. Fixed: parser = etree.XMLParser(resolve_entities=False, no_network=True); etree.parse(untrusted_input, parser). The fix explicitly disables external entity resolution on the parser."
+  }
+]
